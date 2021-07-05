@@ -24,63 +24,64 @@ class MangaInfoDisplay extends StatelessWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
             child: Container(
-              color: Colors.grey.shade900.withOpacity(0.6),
-              alignment: Alignment.center,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Padding(
-                      padding: EdgeInsets.only(left: 12.0),
-                      child: Image.network(
+                color: Colors.grey.shade900.withOpacity(0.6),
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Image.network(
                         _manga.image,
                         height: 200.0,
-                      )),
-                  Flexible(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      //TODO FIX TEXT OVERFLOW
+                      ),
                       Flexible(
-                        child: Text(
-                          _manga.title,
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.grey.shade200,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-
-                      SizedBox(height: 7),
-                      Text(
-                        _manga.author,
-                        style:
-                            TextStyle(fontSize: 14.0, color: Colors.blueAccent),
-                      ),
-                      SizedBox(height: 7),
-                      Text(
-                        _manga.year,
-                        style: TextStyle(
-                            fontSize: 14.0, color: Colors.grey.shade200),
-                      ),
-                      SizedBox(height: 15),
-                      ElevatedButton(
-                          onPressed: () {},
-                          style:
-                              ElevatedButton.styleFrom(shape: StadiumBorder()),
-                          child: Padding(
-                            padding: EdgeInsets.all(7.0),
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          //TODO FIX TEXT OVERFLOW
+                          Flexible(
                             child: Text(
-                              "Read",
+                              _manga.title,
                               style: TextStyle(
-                                  fontSize: 14.0, color: Colors.grey.shade200),
+                                fontSize: 18.0,
+                                color: Colors.grey.shade200,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                          ))
+                          ),
+
+                          SizedBox(height: 7),
+                          Text(
+                            _manga.author,
+                            style: TextStyle(
+                                fontSize: 14.0, color: Colors.blueAccent),
+                          ),
+                          SizedBox(height: 7),
+                          Text(
+                            _manga.year,
+                            style: TextStyle(
+                                fontSize: 14.0, color: Colors.grey.shade200),
+                          ),
+                          SizedBox(height: 15),
+                          ElevatedButton(
+                              onPressed: () {},
+                              style: ElevatedButton.styleFrom(
+                                  shape: StadiumBorder()),
+                              child: Padding(
+                                padding: EdgeInsets.all(7.0),
+                                child: Text(
+                                  "Read",
+                                  style: TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.grey.shade200),
+                                ),
+                              ))
+                        ],
+                      )),
                     ],
-                  )),
-                ],
-              ),
-            ),
+                  ),
+                )),
           ),
         )
       ],
@@ -136,6 +137,7 @@ class MangaChapterDisplay extends StatelessWidget {
             flex: 8,
             child: Container(
               child: ListView.separated(
+                padding: EdgeInsets.zero,
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(_manga.chapters[index].title),
@@ -168,12 +170,7 @@ class MangaScreen extends StatelessWidget {
           mainAxisSize: MainAxisSize.max,
           children: [
             Flexible(child: MangaInfoDisplay(_manga)),
-            (_manga.genres != null)
-                ? Divider()
-                : Container(
-                    color: Colors.blue,
-                    height: 0,
-                  ),
+            Divider(),
             MangaChapterDisplay(_manga)
           ],
         ));
