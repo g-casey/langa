@@ -1,6 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:manga/get_manga.dart';
+import 'package:manga/providers.dart';
+import 'package:provider/provider.dart';
 
 import 'manga.dart';
 
@@ -93,6 +96,10 @@ class MangaChapterDisplay extends StatelessWidget {
   Manga _manga;
   MangaChapterDisplay(this._manga);
 
+  void onChapterTileTap(BuildContext context, String url) {
+    Downloader.getMangaImages(url);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -142,6 +149,8 @@ class MangaChapterDisplay extends StatelessWidget {
                   return ListTile(
                     title: Text(_manga.chapters[index].title),
                     trailing: Text(_manga.chapters[index].date),
+                    onTap: () =>
+                        onChapterTileTap(context, _manga.chapters[index].url),
                   );
                 },
                 itemCount: _manga.chapters.length,
