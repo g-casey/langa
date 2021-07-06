@@ -31,12 +31,12 @@ class SearchScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: ListView.separated(
-        itemCount: Provider.of<SearchProvider>(context).getResults.length,
+        itemCount: Provider.of<MangaProvider>(context).getResults.length,
         separatorBuilder: (context, index) => Divider(),
         itemBuilder: (context, index) {
-          if (Provider.of<SearchProvider>(context).getResults.length != 0) {
+          if (Provider.of<MangaProvider>(context).getResults.length != 0) {
             return MangaTile(
-                Provider.of<SearchProvider>(context).getResults[index]);
+                Provider.of<MangaProvider>(context).getResults[index]);
           } else {
             return Text("Error");
           }

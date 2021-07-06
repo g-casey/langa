@@ -23,12 +23,15 @@ class BarProvider extends ChangeNotifier {
     );
   }
 
+  late bool _showAppBar;
+
   late Widget _appBarTitle;
   late IconButton _appBarIconButton;
 
   BarProvider() {
     _appBarTitle = buildAppBarTitle();
     _appBarIconButton = buildAppBarIconButton();
+    _showAppBar = true;
   }
 
   void changeIcon(BuildContext context, bool focus) {
@@ -50,6 +53,7 @@ class BarProvider extends ChangeNotifier {
 
   get getAppBarIconButton => _appBarIconButton;
   get getAppBarTitle => _appBarTitle;
+  get showAppBar => _showAppBar;
 
   set setAppBarTitle(Widget widget) {
     _appBarTitle = widget;
@@ -58,6 +62,11 @@ class BarProvider extends ChangeNotifier {
 
   set setAppBarIconButton(IconButton icon) {
     _appBarIconButton = icon;
+    notifyListeners();
+  }
+
+  void toggleShowAppBar() {
+    _showAppBar = !_showAppBar;
     notifyListeners();
   }
 }
@@ -72,10 +81,25 @@ class PageProvider extends ChangeNotifier {
   }
 }
 
-class SearchProvider extends ChangeNotifier {
+class MangaProvider extends ChangeNotifier {
   List<Manga> _results = [];
+  int _currentPageIndex = 0;
+  String? _currentChapterName;
+  int? _currentChapterIndex;
 
   get getResults => _results;
+  get getCurrentPageIndex => _currentPageIndex;
+  get getCurrentChapterName => _currentChapterName;
+
+  set setCurrentPageIndex(int index) {
+    _currentPageIndex = index;
+    notifyListeners();
+  }
+
+  set setCurrentChapterName(String name) {
+    _currentChapterName = name;
+    notifyListeners();
+  }
 
   void search(String text) async {
     Downloader loader = Downloader("es", text);

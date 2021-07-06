@@ -19,7 +19,7 @@ class HomePageWidget extends StatelessWidget {
           value: BarProvider(),
         ),
         ChangeNotifierProvider.value(value: PageProvider()),
-        ChangeNotifierProvider.value(value: SearchProvider())
+        ChangeNotifierProvider.value(value: MangaProvider())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

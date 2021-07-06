@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:manga/manga.dart';
 import 'package:html/parser.dart';
 import 'package:html/dom.dart';
@@ -106,8 +104,8 @@ class Downloader {
     _manga.setChapters = chapters;
   }
 
-  static Future<void> getMangaImages(String chapterUrl) async {
-    List<List<String>> imageLinks = [];
+  static Future<List<String>> getMangaImages(String chapterUrl) async {
+    List<String> imageLinks = [];
 
     int pageNum = 1;
     String fixedUrl = chapterUrl.substring(0, chapterUrl.length - 5) + "-10-";
@@ -126,9 +124,6 @@ class Downloader {
     //amount of pages of 10 images
     int groupCount = (pageCount.toDouble() / 10.0).ceil();
 
-    for (int i = 0; i < groupCount; i++) {
-      imageLinks.add([]);
-    }
     while (pageNum <= groupCount) {
       if (pageNum > 1) {
         response = await http.get(Uri.parse(fixedUrl + "$pageNum.html"),
@@ -137,14 +132,15 @@ class Downloader {
       }
       int imageCount = 10;
       if (pageNum == groupCount) {
-        imageCount = pageNum % 10;
+        imageCount = pageCount % 10;
       }
       for (int i = 1; i <= imageCount; i++) {
-        imageLinks[pageNum - 1].add(
+        imageLinks.add(
             document.querySelector(".manga_pic_$i")?.attributes["src"] ??
                 "https://www.computerhope.com/jargon/e/error.png");
       }
       pageNum++;
     }
+    return imageLinks;
   }
 }

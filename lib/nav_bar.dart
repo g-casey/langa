@@ -28,8 +28,7 @@ class TabNavBar extends StatelessWidget {
                           suffixIcon: IconButton(
                             icon: Icon(Icons.search),
                             onPressed: () {
-                              Provider.of<SearchProvider>(context,
-                                      listen: false)
+                              Provider.of<MangaProvider>(context, listen: false)
                                   .search(_filter.text);
                               FocusScopeNode currentFocus =
                                   FocusScope.of(context);
