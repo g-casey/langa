@@ -10,7 +10,6 @@ class MangaTile extends StatelessWidget {
   MangaTile(this._manga);
 
   Future<void> onTap(BuildContext context, Manga manga) async {
-    await Downloader.getFullManga(_manga);
     Navigator.push(context,
         MaterialPageRoute(builder: (context) => MangaScreen(this._manga)));
   }
