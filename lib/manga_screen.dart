@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_viewer/image_viewer.dart';
 import 'package:manga/get_manga.dart';
 import 'package:manga/providers.dart';
@@ -10,6 +11,17 @@ import 'package:provider/provider.dart';
 import 'manga.dart';
 
 //TODO CLEAN WHOLE FILE MAKE SEPERATE WIDGETS
+
+void onChapterTileTap(BuildContext context, Manga manga, int index) async {
+  Provider.of<MangaProvider>(context, listen: false)
+    ..setCurrentPageIndex = 0
+    ..setCurrentChapterName = manga.chapters[index].title;
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              ReaderScreen(manga.chapters[index].url, manga)));
+}
 
 class MangaInfoDisplay extends StatelessWidget {
   Manga _manga;
@@ -70,18 +82,20 @@ class MangaInfoDisplay extends StatelessWidget {
                           ),
                           SizedBox(height: 15),
                           ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                  shape: StadiumBorder()),
-                              child: Padding(
-                                padding: EdgeInsets.all(7.0),
-                                child: Text(
-                                  "Read",
-                                  style: TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.grey.shade200),
-                                ),
-                              ))
+                            onPressed: () =>
+                                onChapterTileTap(context, _manga, 0),
+                            style: ElevatedButton.styleFrom(
+                                shape: StadiumBorder()),
+                            child: Padding(
+                              padding: EdgeInsets.all(7.0),
+                              child: Text(
+                                "Read",
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.grey.shade200),
+                              ),
+                            ),
+                          )
                         ],
                       )),
                     ],
@@ -97,17 +111,6 @@ class MangaInfoDisplay extends StatelessWidget {
 class MangaChapterDisplay extends StatelessWidget {
   Manga _manga;
   MangaChapterDisplay(this._manga);
-
-  void onChapterTileTap(BuildContext context, int index) async {
-    Provider.of<MangaProvider>(context, listen: false)
-      ..setCurrentPageIndex = 0
-      ..setCurrentChapterName = _manga.chapters[index].title;
-    List<String> imageLinks =
-        await Downloader.getMangaImages(_manga.chapters[index].url);
-    print(imageLinks.length);
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ReaderScreen(imageLinks)));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,12 +131,13 @@ class MangaChapterDisplay extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(16.0)),
                             color: Colors.blueAccent,
                             child: Padding(
-                              child: Text(
+                              child: Center(
+                                  child: Text(
                                 _manga.genres[index],
                                 style: TextStyle(
                                     color: Colors.grey.shade200,
                                     fontSize: 14.0),
-                              ),
+                              )),
                               padding: EdgeInsets.all(5.0),
                             ),
                           );
@@ -158,7 +162,7 @@ class MangaChapterDisplay extends StatelessWidget {
                   return ListTile(
                     title: Text(_manga.chapters[index].title),
                     trailing: Text(_manga.chapters[index].date),
-                    onTap: () => onChapterTileTap(context, index),
+                    onTap: () => onChapterTileTap(context, _manga, index),
                   );
                 },
                 itemCount: _manga.chapters.length,
@@ -175,21 +179,36 @@ class MangaScreen extends StatelessWidget {
 
   MangaScreen(this._manga);
 
+  Future<Manga> fetchFullManga() async {
+    try{
+      await Downloader.getFullManga(_manga);
+    }catch(error) {
+    }
+    return _manga;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            iconTheme: IconThemeData(color: Colors.grey.shade100)),
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Flexible(child: MangaInfoDisplay(_manga)),
-            Divider(),
-            MangaChapterDisplay(_manga)
-          ],
-        ));
+    return FutureBuilder<Manga>(
+        future: fetchFullManga(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Scaffold(
+                extendBodyBehindAppBar: true,
+                appBar: AppBar(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    iconTheme: IconThemeData(color: Colors.grey.shade100)),
+                body: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Flexible(child: MangaInfoDisplay(snapshot.data ?? _manga)),
+                    Divider(),
+                    MangaChapterDisplay(snapshot.data ?? _manga)
+                  ],
+                ));
+          }
+          return Center(child: CircularProgressIndicator());
+        });
   }
 }

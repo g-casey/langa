@@ -12,7 +12,6 @@ class TopBar extends StatelessWidget with PreferredSizeWidget {
       backgroundColor: Colors.white,
       automaticallyImplyLeading: true,
       title: Provider.of<BarProvider>(context).getAppBarTitle,
-      leading: Provider.of<BarProvider>(context).getAppBarIconButton,
       centerTitle: true,
       elevation: 4,
     );

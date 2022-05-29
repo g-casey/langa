@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manga/search_bar.dart';
 import 'providers.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:provider/provider.dart';
@@ -15,29 +16,11 @@ class TabNavBar extends StatelessWidget {
   void updateAppBar(BuildContext context, int index) {
     Provider.of<PageProvider>(context, listen: false).setIndex = index;
     if (Provider.of<PageProvider>(context, listen: false).getIndex == 1) {
+      Provider.of<BarProvider>(context, listen: false).enableMainAppBar();
       Provider.of<BarProvider>(context, listen: false).setAppBarTitle =
-          FocusScope(
-              child: Focus(
-                  onFocusChange: (focus) =>
-                      Provider.of<BarProvider>(context, listen: false)
-                          .changeIcon(context, focus),
-                  child: TextField(
-                      controller: _filter,
-                      decoration: new InputDecoration(
-                          hintText: 'Search...',
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: () {
-                              Provider.of<MangaProvider>(context, listen: false)
-                                  .search(_filter.text);
-                              FocusScopeNode currentFocus =
-                                  FocusScope.of(context);
-                              if (!currentFocus.hasPrimaryFocus) {
-                                currentFocus.unfocus();
-                              }
-                            },
-                          )))));
+      SearchBar();
     } else {
+      Provider.of<BarProvider>(context, listen: false).disableMainAppBar();
       Provider.of<BarProvider>(context, listen: false).setAppBarTitle =
           BarProvider.buildAppBarTitle();
       Provider.of<BarProvider>(context, listen: false).setAppBarIconButton =
@@ -45,7 +28,6 @@ class TabNavBar extends StatelessWidget {
     }
 
     _filter.addListener(() {
-      print(_filter.text);
       //TODO Add search suggestions below search bar
       //Provider.of<SearchProvider>(context, listen: false).search(_filter.text);
     });
@@ -64,7 +46,8 @@ class TabNavBar extends StatelessWidget {
           icon: Icon(Icons.home),
           title: Text("Home"),
         ),
-        CustomNavigationBarItem(icon: Icon(Icons.search), title: Text("Search"))
+        CustomNavigationBarItem(icon: Icon(Icons.search), title: Text("Search")), 
+        CustomNavigationBarItem(icon: Icon(Icons.history), title: Text("Recent"))
       ],
       currentIndex: Provider.of<PageProvider>(context).getIndex,
       onTap: (index) => updateAppBar(context, index),

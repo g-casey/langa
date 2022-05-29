@@ -6,7 +6,7 @@ import 'get_manga.dart';
 class BarProvider extends ChangeNotifier {
   static Widget buildAppBarTitle() {
     return Text(
-      'Manga',
+      "Manga", 
       style: TextStyle(
         fontFamily: 'Poppins',
         color: Colors.black,
@@ -24,14 +24,15 @@ class BarProvider extends ChangeNotifier {
   }
 
   late bool _showAppBar;
-
+  late bool _showMainAppBar;
   late Widget _appBarTitle;
-  late IconButton _appBarIconButton;
+  late Widget _appBarIconButton;
 
   BarProvider() {
     _appBarTitle = buildAppBarTitle();
-    _appBarIconButton = buildAppBarIconButton();
+    _appBarIconButton = SizedBox.shrink();
     _showAppBar = true;
+    _showMainAppBar = false;
   }
 
   void changeIcon(BuildContext context, bool focus) {
@@ -46,7 +47,7 @@ class BarProvider extends ChangeNotifier {
         },
       );
     } else {
-      _appBarIconButton = buildAppBarIconButton();
+      _appBarIconButton = SizedBox.shrink();
     }
     notifyListeners();
   }
@@ -54,6 +55,7 @@ class BarProvider extends ChangeNotifier {
   get getAppBarIconButton => _appBarIconButton;
   get getAppBarTitle => _appBarTitle;
   get showAppBar => _showAppBar;
+  get showMainAppBar => _showMainAppBar;
 
   set setAppBarTitle(Widget widget) {
     _appBarTitle = widget;
@@ -67,6 +69,16 @@ class BarProvider extends ChangeNotifier {
 
   void toggleShowAppBar() {
     _showAppBar = !_showAppBar;
+    notifyListeners();
+  }
+
+  void enableMainAppBar(){
+    _showMainAppBar = true;
+    notifyListeners();
+  }
+
+  void disableMainAppBar(){
+    _showMainAppBar = false;
     notifyListeners();
   }
 }
@@ -104,9 +116,7 @@ class MangaProvider extends ChangeNotifier {
   void search(String text) async {
     Downloader loader = Downloader("es", text);
     _results = await loader.search();
-    print(text);
 
-    print(_results[0].title);
     notifyListeners();
   }
 }
